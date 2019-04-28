@@ -1,8 +1,21 @@
 const fs = require('fs');
 const path = require('path');
+const url = require('url');
 const ora = require('ora');
 const chalk = require('chalk');
 const prettyMs = require('pretty-ms');
+
+const getMetaTag = (html, property) => {
+	const regex = new RegExp(`<meta[^>]*property=[\"|\']${property}[\"|\'][^>]*>`, 'i');
+
+	return regex.exec(html)[0];
+};
+
+const getMetaTagContent = (metaTagHtml) => {
+	const regex = /content=[\"]([^\"]*)[\"]/i;
+
+	return regex.exec(metaTagHtml)[1];
+};
 
 module.exports = bundler => {
 	bundler.on('buildEnd', async () => {
@@ -14,9 +27,19 @@ module.exports = bundler => {
 		const start = Date.now();
 
 		const htmlPath = path.join(bundler.options.outDir, 'index.html');
-		const html = fs.openSync(htmlPath).toString();
+		const html = fs.readFileSync(htmlPath).toString();
 
-		console.log(html);
+		const ogImageTag = getMetaTag(html, 'og:image');
+		const ogImageContent = getMetaTagContent(ogImageTag);
+
+		const ogUrlTag = getMetaTag(html, 'og:url');
+		const ogUrlContent = getMetaTagContent(ogUrlTag);
+
+		const absoluteOgImageUrl = url.resolve(ogUrlContent, ogImageContent);
+		const ogImageTagAbsoluteUrl = ogUrlTag.replace(ogUrlContent, absoluteOgImageUrl);
+		const patchedHtml = html.replace(ogImageTag, ogImageTagAbsoluteUrl);
+
+		fs.writeFileSync(htmlPath, patchedHtml);
 
 		const end = Date.now();
 		spinner.stopAndPersist({
