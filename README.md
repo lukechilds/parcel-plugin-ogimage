@@ -9,7 +9,7 @@ Sets absolute URLs for `og:image` meta tags. This is required by the spec and re
 
 You can fix this directly in parcel by using `--public-url https://example.com`, however now all your URLs are hardcoded to absolute URLs which may be undesirable and can break things like prerendering.
 
-This plugin uses the value of the `og:url` meta tag to convert `og:image` to absolute URL.
+This plugin uses the value of the `og:url` meta tag to convert `og:image` to an absolute URL.
 
 ## Install
 
