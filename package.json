@@ -1,6 +1,6 @@
 {
   "name": "parcel-plugin-ogimage",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Set absolute URL for og:image meta tags.",
   "main": "index.js",
   "engines": {
