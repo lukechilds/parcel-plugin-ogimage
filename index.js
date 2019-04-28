@@ -6,13 +6,13 @@ const chalk = require('chalk');
 const prettyMs = require('pretty-ms');
 
 const getMetaTag = (html, property) => {
-	const regex = new RegExp(`<meta[^>]*property=[\"|\']${property}[\"|\'][^>]*>`, 'i');
+	const regex = new RegExp(`<meta[^>]*property=["|']${property}["|'][^>]*>`, 'i');
 
 	return regex.exec(html)[0];
 };
 
-const getMetaTagContent = (metaTagHtml) => {
-	const regex = /content=[\"]([^\"]*)[\"]/i;
+const getMetaTagContent = metaTagHtml => {
+	const regex = /content=["]([^"]*)["]/i;
 
 	return regex.exec(metaTagHtml)[1];
 };
