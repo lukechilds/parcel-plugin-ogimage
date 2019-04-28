@@ -36,7 +36,7 @@ module.exports = bundler => {
 		const ogUrlContent = getMetaTagContent(ogUrlTag);
 
 		const absoluteOgImageUrl = url.resolve(ogUrlContent, ogImageContent);
-		const ogImageTagAbsoluteUrl = ogUrlTag.replace(ogUrlContent, absoluteOgImageUrl);
+		const ogImageTagAbsoluteUrl = ogImageTag.replace(ogImageContent, absoluteOgImageUrl);
 		const patchedHtml = html.replace(ogImageTag, ogImageTagAbsoluteUrl);
 
 		fs.writeFileSync(htmlPath, patchedHtml);
