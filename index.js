@@ -40,7 +40,9 @@ module.exports = bundler => {
 
 		const absoluteOgImageUrl = url.resolve(ogUrlContent, ogImageContent);
 		const ogImageTagAbsoluteUrl = ogImageTag.replace(ogImageContent, absoluteOgImageUrl);
-		const twitterImageTagAbsoluteUrl = twitterImageTag.replace(twitterImageContent, absoluteOgImageUrl);
+
+		const absoluteTwitterImageUrl = url.resolve(ogUrlContent, twitterImageContent);
+		const twitterImageTagAbsoluteUrl = twitterImageTag.replace(twitterImageContent, absoluteTwitterImageUrl);
 		const patchedHtml =
 			html.replace(ogImageTag, ogImageTagAbsoluteUrl).replace(twitterImageTag, twitterImageTagAbsoluteUrl);
 
