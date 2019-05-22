@@ -6,7 +6,7 @@ const chalk = require('chalk');
 const prettyMs = require('pretty-ms');
 
 const getMetaTag = (html, property) => {
-	const regex = new RegExp(`<meta[^>]*property=["|']${property}["|'][^>]*>`, 'i');
+	const regex = new RegExp(`<meta[^>]*[property|name]=["|']${property}["|'][^>]*>`, 'i');
 
 	return regex.exec(html)[0];
 };
@@ -23,7 +23,7 @@ module.exports = bundler => {
 			return;
 		}
 		console.log('');
-		const spinner = ora(chalk.grey('Fixing og:image link')).start();
+		const spinner = ora(chalk.grey('Fixing og:image and twitter:image link')).start();
 		const start = Date.now();
 
 		const htmlPath = path.join(bundler.options.outDir, 'index.html');
@@ -32,19 +32,24 @@ module.exports = bundler => {
 		const ogImageTag = getMetaTag(html, 'og:image');
 		const ogImageContent = getMetaTagContent(ogImageTag);
 
+		const twitterImageTag = getMetaTag(html, 'twitter:image');
+		const twitterImageContent = getMetaTagContent(twitterImageTag);
+
 		const ogUrlTag = getMetaTag(html, 'og:url');
 		const ogUrlContent = getMetaTagContent(ogUrlTag);
 
 		const absoluteOgImageUrl = url.resolve(ogUrlContent, ogImageContent);
 		const ogImageTagAbsoluteUrl = ogImageTag.replace(ogImageContent, absoluteOgImageUrl);
-		const patchedHtml = html.replace(ogImageTag, ogImageTagAbsoluteUrl);
+		const twitterImageTagAbsoluteUrl = twitterImageTag.replace(twitterImageContent, absoluteOgImageUrl);
+		const patchedHtml =
+			html.replace(ogImageTag, ogImageTagAbsoluteUrl).replace(twitterImageTag, twitterImageTagAbsoluteUrl);
 
 		fs.writeFileSync(htmlPath, patchedHtml);
 
 		const end = Date.now();
 		spinner.stopAndPersist({
 			symbol: '✨ ',
-			text: chalk.green(`Fixed og:image link in ${prettyMs(end - start)}.`)
+			text: chalk.green(`Fixed og:image and twitter:image link in ${prettyMs(end - start)}.`)
 		});
 	});
 };
