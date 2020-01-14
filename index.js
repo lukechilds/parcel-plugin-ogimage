@@ -37,8 +37,8 @@ module.exports = bundler => {
 			if (ogImageTag) {
 				const ogImageContent = getMetaTagContent(ogImageTag);
 				const ogUrlTag = getMetaTag(html, 'og:url');
-				const ogUrlContent = getMetaTagContent(ogUrlTag);
-				const absoluteOgImageUrl = url.resolve(ogUrlContent, ogImageContent);
+				const ogUrlContent = new URL(getMetaTagContent(ogUrlTag));
+				const absoluteOgImageUrl = url.resolve(ogUrlContent.origin, ogImageContent);
 				const ogImageTagAbsoluteUrl = ogImageTag.replace(ogImageContent, absoluteOgImageUrl);
 				const patchedHtml = html.replace(ogImageTag, ogImageTagAbsoluteUrl);
 
