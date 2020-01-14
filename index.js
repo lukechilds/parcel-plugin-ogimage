@@ -27,7 +27,7 @@ module.exports = bundler => {
 		const spinner = ora(chalk.grey('Fixing og:image link')).start();
 		const start = Date.now();
 
-		glob.sync(`${bundler.options.outDir}/**/*.html`).forEach(file => {
+		glob.sync(`${bundler.options.outDir}/**/index.html`).forEach(file => {
 			const htmlPath = path.resolve(file);
 			const html = fs.readFileSync(htmlPath).toString();
 			const ogImageTag = getMetaTag(html, 'og:image');
