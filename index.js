@@ -8,16 +8,20 @@ const glob = require('glob');
 
 const getMetaTag = (html, property) => {
 	const regex = new RegExp(`<meta[^>]*property=["|']${property}["|'][^>]*>`, 'i');
-
-	if (regex.exec(html)) {
-		return regex.exec(html)[0];
+	const regexExec = regex.exec(html);
+	if (regexExec) {
+		return regexExec[0];
 	}
+	return false;
 };
 
 const getMetaTagContent = metaTagHtml => {
 	const regex = /content=["]([^"]*)["]/i;
-
-	return regex.exec(metaTagHtml)[1];
+	const regexExec = regex.exec(metaTagHtml);
+	if (regexExec) {
+		return regexExec[1];
+	}
+	return false;
 };
 
 module.exports = bundler => {
@@ -33,10 +37,10 @@ module.exports = bundler => {
 			const htmlPath = path.resolve(file);
 			const html = fs.readFileSync(htmlPath).toString();
 			const ogImageTag = getMetaTag(html, 'og:image');
+			const ogUrlTag = getMetaTag(html, 'og:url');
 
-			if (ogImageTag) {
+			if (ogImageTag && ogUrlTag) {
 				const ogImageContent = getMetaTagContent(ogImageTag);
-				const ogUrlTag = getMetaTag(html, 'og:url');
 				const ogUrlContent = new URL(getMetaTagContent(ogUrlTag));
 				const absoluteOgImageUrl = url.resolve(ogUrlContent.origin, ogImageContent);
 				const ogImageTagAbsoluteUrl = ogImageTag.replace(ogImageContent, absoluteOgImageUrl);
