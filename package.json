@@ -33,6 +33,7 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "fs": "^0.0.1-security",
+    "glob": "^7.1.6",
     "ora": "^3.4.0",
     "path": "^0.12.7",
     "pretty-ms": "^5.0.0"
