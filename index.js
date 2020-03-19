@@ -7,24 +7,24 @@ const prettyMs = require('pretty-ms');
 
 const getMetaTag = (html, property) => {
 	const regex = new RegExp(`<meta[^>]*property=["|']${property}["|'][^>]*>`, 'i');
-	const executedRegex = regex.exec(html);
+	const result = regex.exec(html);
 
-	if (!executedRegex) {
+	if (!result) {
 		throw new Error(`Missing ${property}`);
 	}
 
-	return executedRegex[0];
+	return result[0];
 };
 
-const getMetaTagContent = (metaTagHtml, property) => {
-	const regex = /content=["]([^"]*)["]/i;
-	const executedRegex = regex.exec(metaTagHtml);
+const getMetaTagContent = metaTagHtml => {
+	const contentRegex = /content=["]([^"]*)["]/i;
+	const result = contentRegex.exec(metaTagHtml);
 
-	if (!executedRegex) {
-		throw new Error(`Missing content attribute in ${property}`);
+	if (!result) {
+		throw new Error(`Missing content attribute in ${chalk.bold(metaTagHtml)}`);
 	}
 
-	return executedRegex[1];
+	return result[1];
 };
 
 module.exports = bundler => {
@@ -43,10 +43,10 @@ module.exports = bundler => {
 
 		try {
 			const ogImageTag = getMetaTag(html, 'og:image');
-			const ogImageContent = getMetaTagContent(ogImageTag, 'og:image');
+			const ogImageContent = getMetaTagContent(ogImageTag);
 
 			const ogUrlTag = getMetaTag(html, 'og:url');
-			const ogUrlContent = getMetaTagContent(ogUrlTag, 'og:url');
+			const ogUrlContent = getMetaTagContent(ogUrlTag);
 
 			const absoluteOgImageUrl = url.resolve(ogUrlContent, ogImageContent);
 			const ogImageTagAbsoluteUrl = ogImageTag.replace(ogImageContent, absoluteOgImageUrl);
@@ -62,7 +62,7 @@ module.exports = bundler => {
 		const end = Date.now();
 		const symbol = hasErrors ? chalk.red('✖') : '✨ ';
 		const text = hasErrors ?
-			chalk.red('Failed to fix og:image link. Please fix the above error.') :
+			chalk.red('Failed to fix og:image link.') :
 			chalk.green(`Fixed og:image link in ${prettyMs(end - start)}.`);
 
 		spinner.stopAndPersist({
