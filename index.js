@@ -17,7 +17,7 @@ const getMetaTag = (html, property) => {
 };
 
 const getMetaTagContent = metaTagHtml => {
-	const contentRegex = /content=["]([^"]*)["]/i;
+	const contentRegex = /content="([^"]*)"/i;
 	const results = contentRegex.exec(metaTagHtml);
 
 	if (!results) {
